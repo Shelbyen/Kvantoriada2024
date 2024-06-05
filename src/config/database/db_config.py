@@ -1,10 +1,7 @@
 from typing import Optional
 
-from dotenv import load_dotenv
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
-
-load_dotenv()
 
 
 class ConfigDataBase(BaseSettings):
@@ -18,7 +15,7 @@ class ConfigDataBase(BaseSettings):
     @property
     def database_url(self) -> Optional[PostgresDsn]:
         return (
-            f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASS}@"
+            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@"
             f"{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
 

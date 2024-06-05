@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 
-from db_config import settings_db
+from .db_config import settings_db
 
 
 class DatabaseHelper:
