@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 
 from fastapi import APIRouter, Request, Query, HTTPException
 from fastapi.templating import Jinja2Templates
@@ -14,6 +14,7 @@ from ..schemas.town_schema import (
 )
 
 from ..services.attraction_service import attraction_service
+from ..services.category_service import category_service
 from ..services.town_service import town_service
 
 router = APIRouter()
@@ -48,16 +49,24 @@ async def get_all_attraction(
 
 @router.get("/api/get_all_attraction")
 async def get_all_attraction(
-        town_ids: list[int] | None = None,
-        category_ids: list[int] | None = None
-) -> list[AttractionReplacementListResponse] | None:
+        town_ids: List[int] = Query(None),
+        category_ids: List[int] = Query(None)
+) -> List[AttractionReplacementListResponse] | None:
+    target_attraction = await attraction_service.filter_with_replacement(
+        town_ids=town_ids,
+        category_ids=category_ids
+    )
     try:
-        target_attraction = await attraction_service.filter_with_replacement(
-            town_ids=town_ids,
-            category_ids=category_ids
-        )
         all_towns = await town_service.get_all()
-
+        all_category = await category_service.get_all()
+        return list([AttractionReplacementListResponse(
+            id=i.id,
+            town_name=all_towns[i.town_id].name,
+            category_name=all_category[i.category_id].name,
+            name=i.name,
+            description=i.description,
+            address=i.address
+        ) for i in target_attraction])
     except Exception as e:
         raise HTTPException(HTTP_400_BAD_REQUEST, str(e))
 
@@ -73,7 +82,7 @@ async def get_all_towns() -> list[TownListResponse]:
 @router.get("/api/get_all_categories")
 async def get_all_towns() -> list[TownListResponse]:
     try:
-        return await town_service.get_all()
+        return await category_service.get_all()
     except Exception as e:
         raise HTTPException(HTTP_400_BAD_REQUEST, str(e))
 
