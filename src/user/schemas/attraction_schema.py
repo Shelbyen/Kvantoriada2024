@@ -40,3 +40,13 @@ class AttractionListResponse(BaseModel):
     name: Union[str, None] = None
     description: Union[str, None] = None
     address: Union[str, None] = None
+
+
+class AttractionReplacementListResponse(BaseModel):
+    id: Union[int, None] = None
+    town_name: Union[str, None] = None
+    category_name: Union[str, None] = None
+    name: Union[str, None] = None
+    description: Union[str, None] = None
+    address: Union[str, None] = None
+

@@ -19,6 +19,16 @@ class AttractionService(BaseService):
             offset=offset
         )
 
+    async def filter_with_replacement(
+            self,
+            town_ids: list[int] | None = None,
+            category_ids: list[int] | None = None
+    ) -> list[ModelType] | None:
+        return await self.repository.filter_parameters(
+            town_ids=town_ids,
+            category_ids=category_ids
+        )
+
     async def exists(self, name: str) -> bool:
         return await self.repository.exists(name=name)
 

@@ -1,5 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
 from src.config.project_config import settings
 from src.routers import get_apps_router
 
@@ -10,6 +12,7 @@ def get_application() -> FastAPI:
         debug=settings.DEBUG,
         version=settings.VERSION
     )
+    application.mount("/img", StaticFiles(directory="assets/img"))
     application.include_router(get_apps_router())
 
     # application.add_middleware(

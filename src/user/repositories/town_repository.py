@@ -2,13 +2,13 @@ from sqlalchemy import select
 from sqlalchemy.orm import load_only
 
 from src.repositories.sqlalchemy_repository import SqlAlchemyRepository, ModelType
-from src.models.attraction_model import AttractionModel
+from src.models.town_model import TownModel
 from src.config.database.db_helper import db_helper
 
-from ..schemas.attraction_schema import AttractionCreate, AttractionUpdate
+from ..schemas.town_schema import TownCreate, TownUpdate
 
 
-class AttractionRepository(SqlAlchemyRepository[ModelType, AttractionCreate, AttractionUpdate]):
+class TownRepository(SqlAlchemyRepository[ModelType, TownCreate, TownUpdate]):
     async def filter(
             self,
             fields: list[str] | None = None,
@@ -28,31 +28,17 @@ class AttractionRepository(SqlAlchemyRepository[ModelType, AttractionCreate, Att
             if offset is not None:
                 stmt = stmt.offset(offset)
 
-            rows = await session.execute(stmt)
-            return list(rows.scalars().all())
-
-    async def filter_parameters(
-            self,
-            town_ids: list[int] | None = None,
-            category_ids: list[int] | None = None
-    ) -> list[ModelType] | None:
-        async with self._session_factory() as session:
-            stmt = select(self.model)
-            if town_ids:
-                stmt = stmt.where(self.model.town_id.in_(town_ids))
-            if category_ids:
-                stmt = stmt.where(self.model.category_id.in_(category_ids))
-            rows = await session.execute(stmt)
-            return list(rows.scalars().all())
+            row = await session.execute(stmt)
+            return list(row.scalars().all())
 
     async def all(self) -> list[ModelType] | None:
         return await self.filter()
 
     async def exists(self, **filters) -> bool:
         stmt = select(self.model).filter_by(**filters)
-        async with self._session_factory() as session:
+        async with self._session_factory as session:
             result = await session.execute(stmt)
             return result.scalar() is not None
 
 
-attraction_repository = AttractionRepository(model=AttractionModel, db_session=db_helper.get_db_session)
+town_repository = TownRepository(model=TownModel, db_session=db_helper.get_db_session)
