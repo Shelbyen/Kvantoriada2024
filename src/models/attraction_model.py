@@ -9,7 +9,7 @@ from .town_model import TownModel
 class AttractionModel(Base):
     __tablename__ = "attractions"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     town_id: Mapped[int] = mapped_column(ForeignKey(TownModel.id))
     category_id: Mapped[int] = mapped_column(ForeignKey(CategoryModel.id))
     name: Mapped[str] = mapped_column(String, nullable=False)

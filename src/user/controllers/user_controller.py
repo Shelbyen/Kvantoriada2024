@@ -51,7 +51,7 @@ async def get_all_attraction(
 async def get_all_attraction(
         town_ids: List[int] = Query(None),
         category_ids: List[int] = Query(None)
-) -> List[AttractionReplacementListResponse] | None:
+) -> list[AttractionReplacementListResponse] | None:
     target_attraction = await attraction_service.filter_with_replacement(
         town_ids=town_ids,
         category_ids=category_ids

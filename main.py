@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.config.project_config import settings
 from src.routers import get_apps_router
@@ -15,13 +16,14 @@ def get_application() -> FastAPI:
     application.mount("/img", StaticFiles(directory="assets/img"))
     application.include_router(get_apps_router())
 
-    # application.add_middleware(
-    #     CORSMiddleware,
-    #     allow_origins=settings.CORS_ALLOWED_ORIGINS.split(" "),
-    #     allow_credentials=True,
-    #     allow_methods=["*"],
-    #     allow_headers=["*"],
-    # )
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.CORS_ALLOWED_ORIGINS.split(" "),
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     return application
 
 
