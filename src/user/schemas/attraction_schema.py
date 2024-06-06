@@ -17,6 +17,7 @@ class AttractionBase(BaseModel):
 class AttractionCreate(BaseModel):
     category_id: int
     name: str
+    town_id: int
     description: Union[str, None] = None
     address: Union[str, None] = None
     main_photo: Union[str, None] = None

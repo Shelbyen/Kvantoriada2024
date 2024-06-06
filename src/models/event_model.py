@@ -10,7 +10,7 @@ from .town_model import TownModel
 class EventModel(Base):
     __tablename__ = "events"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     town_id: Mapped[int] = mapped_column(ForeignKey(TownModel.id))
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(Text, default="")

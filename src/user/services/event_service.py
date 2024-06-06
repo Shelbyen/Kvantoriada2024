@@ -18,6 +18,14 @@ class EventService(BaseService):
             limit=limit,
             offset=offset
         )
+    
+    async def filter_with_replacement(
+            self,
+            town_ids: list[int] | None = None
+    ) -> list[ModelType] | None:
+        return await self.repository.filter_parameters(
+            town_ids=town_ids
+        )
 
     async def exists(self, name: str) -> bool:
         return await self.repository.exists(name=name)

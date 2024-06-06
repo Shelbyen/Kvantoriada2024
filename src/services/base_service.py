@@ -4,7 +4,6 @@ from ..repositories.sqlalchemy_repository import ModelType
 
 
 class BaseService:
-
     def __init__(self, repository: AbstractRepository) -> None:
         self.repository: AbstractRepository = repository
 

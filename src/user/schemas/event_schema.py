@@ -1,3 +1,4 @@
+from typing import Union
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -16,7 +17,14 @@ class EventBase(BaseModel):
 
 
 class EventCreate(BaseModel):
-    pass
+    town_id: int
+    name: str
+    description: Union[str, None] = None
+    address: str
+    main_photo: Union[str, None] = None
+    another_photo: Union[str, None] = None
+    start: datetime
+    end: datetime
 
 
 class EventUpdate(BaseModel):
@@ -30,6 +38,15 @@ class EventResponse(BaseModel):
 class EventListResponse(BaseModel):
     id: int | None = None
     town_id: int | None = None
+    name: str | None = None
+    address: str | None = None
+    start: datetime | None = None
+    end: datetime | None = None
+
+
+class EventReplacementListResponse(BaseModel):
+    id: int | None = None
+    town_name: str | None = None
     name: str | None = None
     address: str | None = None
     start: datetime | None = None

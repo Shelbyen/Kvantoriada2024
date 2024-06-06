@@ -30,6 +30,18 @@ class EventRepository(SqlAlchemyRepository[ModelType, EventCreate, EventUpdate])
 
             row = await session.execute(stmt)
             return list(row.scalars().all())
+    
+    async def filter_parameters(
+        self,
+        town_ids: list[int] | None = None
+    ) -> list[ModelType] | None:
+        async with self._session_factory() as session:
+            stmt = select(self.model)
+            if town_ids:
+                stmt = stmt.where(self.model.town_id.in_(town_ids))
+            rows = await session.execute(stmt)
+            return list(rows.scalars().all())
+
 
     async def all(self) -> list[ModelType] | None:
         return await self.filter()
