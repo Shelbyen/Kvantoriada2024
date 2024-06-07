@@ -24,7 +24,6 @@ from ..services.category_service import category_service
 from ..services.town_service import town_service
 from ..services.event_service import event_service
 
-
 router = APIRouter()
 
 templates = Jinja2Templates(directory="assets/templates")
@@ -33,12 +32,32 @@ templates = Jinja2Templates(directory="assets/templates")
 @router.get("/", response_class=HTMLResponse)
 async def main_page(request: Request):
     return templates.TemplateResponse(
-        request=request, name="test.html"
+        request=request, name="index.html"
+    )
+
+
+@router.get("/towns/{town_id}", response_class=HTMLResponse)
+async def main_page(request: Request, town_id: int):
+    all_at = await get_all_attraction(
+        town_ids=[town_id],
+    )
+
+    all_ev = await get_all_event(
+        town_ids=[town_id]
+    )
+
+    all_attractions = ""
+    for i in all_at:
+        all_attractions += i.name + "\n"
+        all_attractions += i.description + "\n"
+        all_attractions += i.town_name + i.address + "\n"
+    return templates.TemplateResponse(
+        request=request, name="Events.html", context={"all_events": "ddd", "all_attractions": all_attractions}
     )
 
 
 @router.get("/api/dev/get_all_attraction")
-async def get_all_attraction(
+async def get_all_attraction_dev(
         fields: Annotated[list, Query()] = None,
         order: Annotated[list, Query()] = None,
         limit: int | None = None,
@@ -57,8 +76,8 @@ async def get_all_attraction(
 
 @router.get("/api/get_all_attraction")
 async def get_all_attraction(
-        town_ids: List[int] = Query(None),
-        category_ids: List[int] = Query(None)
+        town_ids: List[int] = None,
+        category_ids: List[int] = None
 ) -> list[AttractionReplacementListResponse] | None:
     target_attractions = await attraction_service.filter_with_replacement(
         town_ids=town_ids,
@@ -81,8 +100,8 @@ async def get_all_attraction(
 
 @router.get("/api/get_all_event")
 async def get_all_event(
-        town_ids: List[int] = Query(None)
-) -> list[AttractionReplacementListResponse] | None:
+        town_ids: List[int] = None
+) -> list[EventReplacementListResponse] | None:
     target_events = await event_service.filter_with_replacement(
         town_ids=town_ids
     )
@@ -99,7 +118,6 @@ async def get_all_event(
         ) for i in target_events])
     except Exception as e:
         raise HTTPException(HTTP_400_BAD_REQUEST, str(e))
-
 
 
 @router.get("/api/get_all_towns")

@@ -42,7 +42,6 @@ class EventRepository(SqlAlchemyRepository[ModelType, EventCreate, EventUpdate])
             rows = await session.execute(stmt)
             return list(rows.scalars().all())
 
-
     async def all(self) -> list[ModelType] | None:
         return await self.filter()
 

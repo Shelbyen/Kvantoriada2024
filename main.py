@@ -13,7 +13,7 @@ def get_application() -> FastAPI:
         debug=settings.DEBUG,
         version=settings.VERSION
     )
-    application.mount("/img", StaticFiles(directory="assets/img"))
+    application.mount("/static", StaticFiles(directory="assets/static"), "static")
     application.include_router(get_apps_router())
 
     application.add_middleware(
